@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using Day01.Extensions;
 using static Common.Utils;
 
 namespace Day01
@@ -28,18 +29,13 @@ namespace Day01
 
         private static int CalculateAnswer2(string input)
         {
-            int index = 1, level = 0;
-
-            foreach (var change in input)
-            {
-                level += ParenToInt(change);
-                if (level == -1)
-                    break;
-
-                index++;
-            }
-
-            return index;
+            return input
+                .Generate(
+                    (Index: 0, Level: 0),
+                    (tuple, @char) => (Index: tuple.Index + 1, Level: tuple.Level + ParenToInt(@char)))
+                .SkipWhile(tuple => tuple.Level != -1)
+                .First()
+                .Index;
         }
 
         private static int ParenToInt(char paren)
