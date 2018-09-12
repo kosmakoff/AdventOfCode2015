@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Day01.Extensions;
+using Common.Extensions;
 using static Common.Utils;
 
 namespace Day01
