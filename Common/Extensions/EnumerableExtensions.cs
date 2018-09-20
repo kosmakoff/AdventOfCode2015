@@ -20,9 +20,9 @@ namespace Common.Extensions
             }
         }
 
-        public static IEnumerable<IList<TSource>> Permutations<TSource>(this IEnumerable<TSource> source)
+        public static IEnumerable<IList<TSource>> Permutations<TSource>(this IList<TSource> source)
         {
-            return PermutationsImpl(source.ToList());
+            return PermutationsImpl(source);
         }
 
         public static IEnumerable<IList<TSource>> Pairwise<TSource>(this IEnumerable<TSource> source)
@@ -41,6 +41,18 @@ namespace Common.Extensions
                     current = next;
                 }
             }
+        }
+
+        public static IEnumerable<IList<TSource>> PermutationsWithoutRotations<TSource>(this IList<TSource> source)
+        {
+            if (!source.Any())
+                throw new ArgumentException("Collection is empty");
+
+            var head = source.First();
+            var tail = source.Skip(1).ToList();
+
+            return tail.Permutations()
+                .Select(permutation => new[] {head}.Concat(permutation).ToList());
         }
 
         private static IEnumerable<IList<TSource>> PermutationsImpl<TSource>(this IList<TSource> source)
