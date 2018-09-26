@@ -55,6 +55,28 @@ namespace Common.Extensions
                 .Select(permutation => new[] {head}.Concat(permutation).ToList());
         }
 
+        public static IEnumerable<IList<TSource>> CartesianProduct<TSource>(this IEnumerable<IList<TSource>> source)
+        {
+            return source
+                .Aggregate((IEnumerable<IList<TSource>>) new IList<TSource>[] {new List<TSource>(0)},
+                    (accumulator, sequence) =>
+                        from accSeq in accumulator
+                        from item in sequence
+                        select accSeq.Concat(new[] {item}).ToList());
+        }
+
+        public static IEnumerable<IList<TSource>> Combinations<TSource>(this IList<TSource> source)
+        {
+            return Enumerable.Repeat(new[] {true, false}, source.Count)
+                .CartesianProduct()
+                .Where(bools => bools.Any(b => b))
+                .Select(bools => bools
+                    .Zip(source, (b, ts) => (B: b, Ts: ts))
+                    .Where(a => a.B)
+                    .Select(a => a.Ts)
+                    .ToList());
+        }
+
         private static IEnumerable<IList<TSource>> PermutationsImpl<TSource>(this IList<TSource> source)
         {
             if (source.Count == 1)
