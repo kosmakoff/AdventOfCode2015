@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Common;
 using Sprache;
 using static Common.Utils;
 
@@ -20,8 +21,8 @@ namespace Day06
 
             foreach (var changeCommand in commands)
             {
-                bitGrid.ChangeData(changeCommand.CoordsFrom, changeCommand.CoordsTo, changeCommand.ChangeMethod);
-                intGrid.ChangeData(changeCommand.CoordsFrom, changeCommand.CoordsTo, changeCommand.ChangeMethod);
+                ChangeData(bitGrid, changeCommand.CoordsFrom, changeCommand.CoordsTo, changeCommand.ChangeMethod);
+                ChangeData(bitGrid, changeCommand.CoordsFrom, changeCommand.CoordsTo, changeCommand.ChangeMethod);
             }
 
             var answer1 = bitGrid.GetLightsOnCount();
@@ -30,6 +31,28 @@ namespace Day06
 
             PrintAnswer("Answer 1", answer1);
             PrintAnswer("Answer 2", answer2);
+        }
+
+        private static void ChangeData(BitGrid bitGrid, Coords from, Coords to, ChangeMethod changeMethod)
+        {
+            for (ushort x = from.X; x <= to.X; x++)
+            for (ushort y = from.Y; y <= to.Y; y++)
+            {
+                switch (changeMethod)
+                {
+                    case ChangeMethod.TurnOn:
+                        bitGrid[x, y] = true;
+                        break;
+                    case ChangeMethod.TurnOff:
+                        bitGrid[x, y] = false;
+                        break;
+                    case ChangeMethod.Toggle:
+                        bitGrid[x, y] = !bitGrid[x, y];
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(changeMethod), changeMethod, null);
+                }
+            }
         }
     }
 }
